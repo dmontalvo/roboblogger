@@ -24,8 +24,8 @@ def getNewPosts(parsedFeedList, aggBlog):
             newPostList.append(post)
     return newPostList
 
-def checkPost(post):
-    """Checks a post to see if it's in the file of old posts."""
+def checkPost(post, file):
+    """Takes a post and a file, and checks to see if the post is in the file."""
 
 blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/"]
 
