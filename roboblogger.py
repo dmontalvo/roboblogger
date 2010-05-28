@@ -2,11 +2,9 @@ import feedparser
 old_posts = "posts.txt"
 
 def aggregateBlogs(feedList, aggBlog):
-    """Takes a list of blog feeds and an aggregator blog. Adds all unaggregated
-    posts from the blogs in the list and adds them to the aggregator blog."""
+    """Takes a list of blog feeds and an aggregator blog. Adds all unaggregated posts from the blogs in the list and adds them to the aggregator blog."""
     parsedList = parseFeeds(feedList)
     newPostList = getNewPosts(parsedList)
-    print len(newPostList)
 
 def parseFeeds(feedList):
     """Takes a list of feeds and returns them in parsed form."""
@@ -16,8 +14,7 @@ def parseFeeds(feedList):
     return parsedList
 
 def getNewPosts(parsedFeedList):
-    """Takes a list of parsed feeds and returns a list of posts that haven't
-    yet been aggregated. """
+    """Takes a list of parsed feeds and returns a list of posts that haven't yet been aggregated. """
     newPostList = []
     for parsedFeed in parsedFeedList:
         for post in parsedFeed.entries:
@@ -32,6 +29,8 @@ def isPosted(post):
     f.close()
     return urls.find(post.link) != -1
 
+def postToWordpress(postList, aggBlog):
+    """Takes a list of posts and the aggBlog and then adds the posts to the aggBlog. Writes the url of the post to a file (to record it as "old")."""
 
 blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/"]
 
