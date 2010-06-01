@@ -1,9 +1,20 @@
+import os
+lock = "lock.txt"
+if os.path.exists(lock):
+    sys.exit("Lock file exists.")
+else:
+    f = open(lock, 'w')
 import feedparser
 import pyblog
 from datetime import datetime
+from urlparse import urlparse
 from sys import argv
 script, username, password = argv
 old_posts = "posts.txt"
+
+blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/", "http://words.nasaimages.org/feed/", "http://www.openbookalliance.org/feed/", "http://iawebarchiving.wordpress.com/feed/"]
+
+feeds = {'blog.openlibrary.org':'The Open Library Blog', 'internetarchive.wordpress.com':'The Internet Archive Blog', 'opencontentalliance.org':'The Open Content Alliance Blog', 'words.nasaimages.org':'The NASA Images Blog', 'openbookalliance.org':'The Open Book Alliance Blog', 'iawebarchiving.wordpress.com':'The Web Archiving at archive.org Blog'}
 
 def aggregateBlogs(feedList, aggBlog):
     """Takes a list of blog feeds and an aggregator blog. Adds all unaggregated posts from the blogs in the list and adds them to the aggregator blog."""
@@ -29,16 +40,28 @@ def getNewPosts(parsedFeedList):
 
 def isPosted(post):
     """Takes a post and checks to see if it's in the "old post" file."""
-    f = open(old_posts)
-    urls = f.read()
-    f.close()
-    return urls.find(post.link) != -1
+    if os.path.exists(old_posts):
+        f = open(old_posts)
+        urls = f.read()
+        f.close()
+        return urls.find(post.link) != -1
+    else:
+        return False
+
+def getContent(post):
+    content = post.content[0].value
+    author = post.author
+    link = post.link
+    site = urlparse(link).netloc
+    ref = '''<div><i><a href ="''' + link + '''">Originally posted on ''' + feeds[site] + ''' by ''' + author + '''.</a></i></div>'''
+    content += ref
+    return content
 
 def postToWordPress(postList, aggBlog):
     """Takes a list of posts and the aggBlog and then adds the posts to the aggBlog. Writes the url of the post to a file (to record it as "old")."""
     blog = pyblog.WordPress(aggBlog, username, password)
     for post in postList:
-        content = post.content[0].value
+        content = getContent(post)
         title = post.title
         date = datetime(*post.updated_parsed[:6])
         postDict = {'title':title, 'description':content, 'dateCreated':date}
@@ -51,9 +74,7 @@ def updateFile(postList):
     for post in postList:
         f.write(post.link)
         f.write("\n")
-    f.close()
+    f.close()  
 
-# blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/"]
-
-blogs = ["http://blog.openlibrary.org/feed/"]
 aggregateBlogs(blogs, "http://dmontalvo.wordpress.com/xmlrpc.php")
+os.unlink(lock)
