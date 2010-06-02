@@ -30,7 +30,7 @@ from datetime import datetime
 from urlparse import urlparse
 from sys import argv
 script, username, password = argv
-old_posts = "posts.txt"
+old_posts = "posts-test.txt"
 
 blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/", "http://words.nasaimages.org/feed/", "http://www.openbookalliance.org/feed/", "http://iawebarchiving.wordpress.com/feed/"]
 
@@ -97,5 +97,5 @@ def updateFile(postList):
         f.write("\n")
     f.close()  
 
-aggregateBlogs(blogs, "http://ianews.wordpress.com/xmlrpc.php")
+aggregateBlogs(blogs, "http://http://dmontalvo.wordpress.com/xmlrpc.php")
 os.unlink(lock)
