@@ -1,3 +1,21 @@
+# Roboblogger: aggregates multiple blogs into a single, centralized blog.
+# Copyright (C) 2010 Daniel Montalvo
+
+# This program is free software: you can redistribute it and/or  modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+# Contact info: daniel.m@archive.org
+
 import os
 lock = "lock.txt"
 if os.path.exists(lock):
@@ -49,6 +67,7 @@ def isPosted(post):
         return False
 
 def getContent(post):
+    """Takes a post and returns the content, plus a link to the original."""
     content = post.content[0].value
     author = post.author
     link = post.link
