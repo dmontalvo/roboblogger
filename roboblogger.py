@@ -1,5 +1,5 @@
 # Roboblogger: aggregates multiple blogs into a single, centralized blog.
-# Copyright (C) 2010 Daniel Montalvo
+# Copyright (C) 2010 Internet Archive. Software license AGPL version 3.
 
 # This program is free software: you can redistribute it and/or  modify
 # it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# Contact info: daniel.m@archive.org
+# Contact info:
+# Daniel Montalvo
+# daniel.m@archive.org
 
 import os
 lock = "lock.txt"
@@ -95,5 +97,5 @@ def updateFile(postList):
         f.write("\n")
     f.close()  
 
-aggregateBlogs(blogs, "http://dmontalvo.wordpress.com/xmlrpc.php")
+aggregateBlogs(blogs, "http://ianews.wordpress.com/xmlrpc.php")
 os.unlink(lock)
