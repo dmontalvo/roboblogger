@@ -34,7 +34,7 @@ old_posts = "posts.txt"
 
 blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/", "http://words.nasaimages.org/feed/", "http://www.openbookalliance.org/feed/", "http://iawebarchiving.wordpress.com/feed/"]
 
-feeds = {'blog.openlibrary.org':'The Open Library Blog', 'internetarchive.wordpress.com':'The Internet Archive Blog', 'www.opencontentalliance.org':'The Open Content Alliance Blog', 'words.nasaimages.org':'The NASA Images Blog', 'openbookalliance.org':'The Open Book Alliance Blog', 'iawebarchiving.wordpress.com':'The Web Archiving at archive.org Blog'}
+feeds = {'blog.openlibrary.org':'The Open Library Blog', 'internetarchive.wordpress.com':'The Internet Archive Blog', 'www.opencontentalliance.org':'The Open Content Alliance Blog', 'words.nasaimages.org':'The NASA Images Blog', 'www.openbookalliance.org':'The Open Book Alliance Blog', 'iawebarchiving.wordpress.com':'The Web Archiving at archive.org Blog'}
 
 def aggregateBlogs(feedList, aggBlog):
     """Takes a list of blog feeds and an aggregator blog. Adds all unaggregated posts from the blogs in the list and adds them to the aggregator blog."""
