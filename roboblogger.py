@@ -85,7 +85,12 @@ def postToWordPress(postList, aggBlog):
         content = getContent(post)
         title = post.title
         date = datetime(*post.updated_parsed[:6])
-        postDict = {'title':title, 'description':content, 'dateCreated':date}
+        tags = []
+        x = 0
+        for tag in post.tags:
+            tags.append(post.tags[x].term)
+            x += 1
+        postDict = {'title':title, 'description':content, 'dateCreated':date, 'categories':tags}
         blog.new_post(postDict)
     updateFile(postList)
 
@@ -97,5 +102,5 @@ def updateFile(postList):
         f.write("\n")
     f.close()  
 
-aggregateBlogs(blogs, "http://http://dmontalvo.wordpress.com/xmlrpc.php")
+aggregateBlogs(blogs, "http://dmontalvo.wordpress.com/xmlrpc.php")
 os.unlink(lock)
