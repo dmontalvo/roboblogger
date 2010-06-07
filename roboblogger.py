@@ -31,7 +31,7 @@ from urlparse import urlparse
 from sys import argv
 import re
 script, username, password = argv
-old_posts = "posts-test.txt"
+old_posts = "posts.txt"
 
 blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/", "http://words.nasaimages.org/feed/", "http://www.openbookalliance.org/feed/", "http://iawebarchiving.wordpress.com/feed/", "http://opds-spec.org/feed/"]
 
