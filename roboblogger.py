@@ -76,6 +76,7 @@ def getContent(post):
     link = post.link
     site = urlparse(link).netloc
     content = re.sub('<a href="http://feeds.wordpress.com.*?</a>', '', content)
+    content = re.sub('<img .*?http://stats.wordpress.com.*?>', '', content)
     ref = '''<div><i><a href ="''' + link + '''">Originally posted on ''' + feeds[site] + ''' by ''' + author + '''.</a></i></div>'''
     content += ref
     return content
