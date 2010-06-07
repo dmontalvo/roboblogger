@@ -29,12 +29,13 @@ import pyblog
 from datetime import datetime
 from urlparse import urlparse
 from sys import argv
+import re
 script, username, password = argv
-old_posts = "posts.txt"
+old_posts = "posts-test.txt"
 
-blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/", "http://words.nasaimages.org/feed/", "http://www.openbookalliance.org/feed/", "http://iawebarchiving.wordpress.com/feed/"]
+blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/", "http://words.nasaimages.org/feed/", "http://www.openbookalliance.org/feed/", "http://iawebarchiving.wordpress.com/feed/", "http://opds-spec.org/feed/"]
 
-feeds = {'blog.openlibrary.org':'The Open Library Blog', 'internetarchive.wordpress.com':'The Internet Archive Blog', 'www.opencontentalliance.org':'The Open Content Alliance Blog', 'words.nasaimages.org':'The NASA Images Blog', 'www.openbookalliance.org':'The Open Book Alliance Blog', 'iawebarchiving.wordpress.com':'The Web Archiving at archive.org Blog'}
+feeds = {'blog.openlibrary.org':'The Open Library Blog', 'internetarchive.wordpress.com':'The Internet Archive Blog', 'www.opencontentalliance.org':'The Open Content Alliance Blog', 'words.nasaimages.org':'The NASA Images Blog', 'www.openbookalliance.org':'The Open Book Alliance Blog', 'iawebarchiving.wordpress.com':'The Web Archiving at archive.org Blog', 'opds-spec.org':'The OPDS blog'}
 
 def aggregateBlogs(feedList, aggBlog):
     """Takes a list of blog feeds and an aggregator blog. Adds all unaggregated posts from the blogs in the list and adds them to the aggregator blog."""
@@ -74,6 +75,8 @@ def getContent(post):
     author = post.author
     link = post.link
     site = urlparse(link).netloc
+    content = re.sub('<a href="http://feeds.wordpress.com.*?</a>', '', content)
+    content = re.sub('<img .*?http://stats.wordpress.com.*?>', '', content)
     ref = '''<div><i><a href ="''' + link + '''">Originally posted on ''' + feeds[site] + ''' by ''' + author + '''.</a></i></div>'''
     content += ref
     return content
@@ -85,7 +88,12 @@ def postToWordPress(postList, aggBlog):
         content = getContent(post)
         title = post.title
         date = datetime(*post.updated_parsed[:6])
-        postDict = {'title':title, 'description':content, 'dateCreated':date}
+        tags = []
+        x = 0
+        for tag in post.tags:
+            tags.append(post.tags[x].term)
+            x += 1
+        postDict = {'title':title, 'description':content, 'dateCreated':date, 'categories':tags}
         blog.new_post(postDict)
     updateFile(postList)
 
