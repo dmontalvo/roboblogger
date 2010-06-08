@@ -23,7 +23,7 @@ lock = "lock.txt"
 # The database where old posts are stored
 database = 'posts.sqlite'
 # The blog where you want to put the aggregated posts
-aggBlog = "http://dmontalvo.wordpress.com/xmlrpc.php"
+aggBlog = "http://ianews.wordpress.com/xmlrpc.php"
 # Blogs you want to aggregate
 blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/", "http://words.nasaimages.org/feed/", "http://www.openbookalliance.org/feed/", "http://iawebarchiving.wordpress.com/feed/", "http://opds-spec.org/feed/"]
 # Lets you look up a blog's name, given the url
