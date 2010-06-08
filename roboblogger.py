@@ -32,7 +32,7 @@ from sys import argv
 import re
 import sqlite3
 script, username, password = argv
-conn = sqlite3.connect('posts')
+conn = sqlite3.connect('posts.sqlite')
 c = conn.cursor()
 
 blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/", "http://words.nasaimages.org/feed/", "http://www.openbookalliance.org/feed/", "http://iawebarchiving.wordpress.com/feed/", "http://opds-spec.org/feed/"]
