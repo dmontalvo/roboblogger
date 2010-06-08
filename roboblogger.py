@@ -93,12 +93,13 @@ def postToWordPress(postList, aggBlog):
             tags.append(post.tags[x].term)
             x += 1
         postDict = {'title':title, 'description':content, 'dateCreated':date, 'categories':tags}
-        blog.new_post(postDict)
-    updateDatabase(postList)
+        id = blog.new_post(postDict)
+        updateDatabase(post, id)
 
-def updateDatabase(postList):
-    """Adds the posts in the list to the database of aggregated posts."""
-
+def updateDatabase(post, id):
+    """Adds the post url and id to the database of aggregated posts."""
+    c.execute('insert into posts values (?,?)',(post.link,id))
+    conn.commit()
 
 aggregateBlogs(blogs, "http://dmontalvo.wordpress.com/xmlrpc.php")
 c.close()
