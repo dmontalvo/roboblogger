@@ -30,8 +30,10 @@ from datetime import datetime
 from urlparse import urlparse
 from sys import argv
 import re
+import sqlite3
 script, username, password = argv
-old_posts = "posts.txt"
+conn = sqlite3.connect('posts')
+c = conn.cursor()
 
 blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/", "http://words.nasaimages.org/feed/", "http://www.openbookalliance.org/feed/", "http://iawebarchiving.wordpress.com/feed/", "http://opds-spec.org/feed/"]
 
@@ -60,14 +62,11 @@ def getNewPosts(parsedFeedList):
     return newPostList
 
 def isPosted(post):
-    """Takes a post and checks to see if it's in the "old post" file."""
-    if os.path.exists(old_posts):
-        f = open(old_posts)
-        urls = f.read()
-        f.close()
-        return urls.find(post.link) != -1
-    else:
-        return False
+    """Takes a post and checks to see if it's in the "old post" database."""
+    c.execute('select * from posts where url = ?',(post.link,))
+    fetch = c.fetchall()
+    posted = [] != fetch
+    return posted
 
 def getContent(post):
     """Takes a post and returns the content, plus a link to the original."""
@@ -82,7 +81,7 @@ def getContent(post):
     return content
 
 def postToWordPress(postList, aggBlog):
-    """Takes a list of posts and the aggBlog and then adds the posts to the aggBlog. Writes the url of the post to a file (to record it as "old")."""
+    """Takes a list of posts and the aggBlog and then adds the posts to the aggBlog. Adds the post to the database (to record it as "old")."""
     blog = pyblog.WordPress(aggBlog, username, password)
     for post in postList:
         content = getContent(post)
@@ -94,16 +93,14 @@ def postToWordPress(postList, aggBlog):
             tags.append(post.tags[x].term)
             x += 1
         postDict = {'title':title, 'description':content, 'dateCreated':date, 'categories':tags}
-        blog.new_post(postDict)
-    updateFile(postList)
+        id = blog.new_post(postDict)
+        updateDatabase(post, id)
 
-def updateFile(postList):
-    """Writes the posts in the list to a file."""
-    f = open(old_posts, 'a')
-    for post in postList:
-        f.write(post.link)
-        f.write("\n")
-    f.close()  
+def updateDatabase(post, id):
+    """Adds the post url and id to the database of aggregated posts."""
+    c.execute('insert into posts values (?,?)',(post.link,id))
+    conn.commit()
 
 aggregateBlogs(blogs, "http://ianews.wordpress.com/xmlrpc.php")
+c.close()
 os.unlink(lock)
