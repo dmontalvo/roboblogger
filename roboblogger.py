@@ -18,15 +18,18 @@
 # Daniel Montalvo
 # daniel.m@archive.org
 
-import os
-
 # Prevents two instances of the script from running simultaneously
 lock = "lock.txt" 
-if os.path.exists(lock):
-    sys.exit("Lock file exists.")
-else:
-    f = open(lock, 'w')
+# The database where old posts are stored
+database = 'posts.sqlite'
+# The blog where you want to put the aggregated posts
+aggBlog = "http://dmontalvo.wordpress.com/xmlrpc.php"
+# Blogs you want to aggregate
+blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/", "http://words.nasaimages.org/feed/", "http://www.openbookalliance.org/feed/", "http://iawebarchiving.wordpress.com/feed/", "http://opds-spec.org/feed/"]
+# Lets you look up a blog's name, given the url
+feeds = {'blog.openlibrary.org':'The Open Library Blog', 'internetarchive.wordpress.com':'The Internet Archive Blog', 'www.opencontentalliance.org':'The Open Content Alliance Blog', 'words.nasaimages.org':'The NASA Images Blog', 'www.openbookalliance.org':'The Open Book Alliance Blog', 'iawebarchiving.wordpress.com':'The Web Archiving at archive.org Blog', 'opds-spec.org':'The OPDS blog'}
 
+import os
 import feedparser
 import pyblog
 from datetime import datetime
@@ -34,22 +37,16 @@ from urlparse import urlparse
 from sys import argv
 import re
 import sqlite3
+
 script, username, password = argv
 
-# The database where old posts are stored
-database = 'posts.sqlite' 
+if os.path.exists(lock):
+    sys.exit("Lock file exists.")
+else:
+    f = open(lock, 'w')
 
 conn = sqlite3.connect(database)
 c = conn.cursor()
-
-# The blog where you want to put the aggregated posts
-aggBlog = "http://dmontalvo.wordpress.com/xmlrpc.php"
-
-# Blogs you want to aggregate
-blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/", "http://words.nasaimages.org/feed/", "http://www.openbookalliance.org/feed/", "http://iawebarchiving.wordpress.com/feed/", "http://opds-spec.org/feed/"]
-
-# Lets you look up a blog's name, given the url
-feeds = {'blog.openlibrary.org':'The Open Library Blog', 'internetarchive.wordpress.com':'The Internet Archive Blog', 'www.opencontentalliance.org':'The Open Content Alliance Blog', 'words.nasaimages.org':'The NASA Images Blog', 'www.openbookalliance.org':'The Open Book Alliance Blog', 'iawebarchiving.wordpress.com':'The Web Archiving at archive.org Blog', 'opds-spec.org':'The OPDS blog'}
 
 def aggregateBlogs(feedList, aggBlog):
     """Takes a list of blog feeds and an aggregator blog. Adds all unaggregated posts from the blogs in the list and adds them to the aggregator blog."""
