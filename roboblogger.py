@@ -37,6 +37,7 @@ from urlparse import urlparse
 from sys import argv
 import re
 import sqlite3
+<<<<<<< HEAD:roboblogger.py
 
 script, username, password = argv
 
@@ -47,6 +48,15 @@ else:
 
 conn = sqlite3.connect(database)
 c = conn.cursor()
+=======
+script, username, password = argv
+conn = sqlite3.connect('posts.sqlite')
+c = conn.cursor()
+
+blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/", "http://words.nasaimages.org/feed/", "http://www.openbookalliance.org/feed/", "http://iawebarchiving.wordpress.com/feed/", "http://opds-spec.org/feed/"]
+
+feeds = {'blog.openlibrary.org':'The Open Library Blog', 'internetarchive.wordpress.com':'The Internet Archive Blog', 'www.opencontentalliance.org':'The Open Content Alliance Blog', 'words.nasaimages.org':'The NASA Images Blog', 'www.openbookalliance.org':'The Open Book Alliance Blog', 'iawebarchiving.wordpress.com':'The Web Archiving at archive.org Blog', 'opds-spec.org':'The OPDS blog'}
+>>>>>>> 0bf6ec4ee39db8928744f87add8140a6a49dce7a:roboblogger.py
 
 def aggregateBlogs(feedList, aggBlog):
     """Takes a list of blog feeds and an aggregator blog. Adds all unaggregated posts from the blogs in the list and adds them to the aggregator blog."""
@@ -112,6 +122,10 @@ def updateDatabase(post, id):
     c.execute('insert into posts values (?,?)',(post.link,id))
     conn.commit()
 
+<<<<<<< HEAD:roboblogger.py
 aggregateBlogs(blogs, aggBlog)
+=======
+aggregateBlogs(blogs, "http://ianews.wordpress.com/xmlrpc.php")
+>>>>>>> 0bf6ec4ee39db8928744f87add8140a6a49dce7a:roboblogger.py
 c.close()
 os.unlink(lock)
