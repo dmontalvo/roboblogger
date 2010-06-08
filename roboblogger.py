@@ -19,11 +19,14 @@
 # daniel.m@archive.org
 
 import os
-lock = "lock.txt"
+
+# Prevents two instances of the script from running simultaneously
+lock = "lock.txt" 
 if os.path.exists(lock):
     sys.exit("Lock file exists.")
 else:
     f = open(lock, 'w')
+
 import feedparser
 import pyblog
 from datetime import datetime
@@ -32,11 +35,20 @@ from sys import argv
 import re
 import sqlite3
 script, username, password = argv
-conn = sqlite3.connect('posts.sqlite')
+
+# The database where old posts are stored
+database = 'posts.sqlite' 
+
+conn = sqlite3.connect(database)
 c = conn.cursor()
 
+# The blog where you want to put the aggregated posts
+aggBlog = "http://dmontalvo.wordpress.com/xmlrpc.php"
+
+# Blogs you want to aggregate
 blogs = ["http://blog.openlibrary.org/feed/", "http://internetarchive.wordpress.com/feed/", "http://www.opencontentalliance.org/feed/", "http://words.nasaimages.org/feed/", "http://www.openbookalliance.org/feed/", "http://iawebarchiving.wordpress.com/feed/", "http://opds-spec.org/feed/"]
 
+# Lets you look up a blog's name, given the url
 feeds = {'blog.openlibrary.org':'The Open Library Blog', 'internetarchive.wordpress.com':'The Internet Archive Blog', 'www.opencontentalliance.org':'The Open Content Alliance Blog', 'words.nasaimages.org':'The NASA Images Blog', 'www.openbookalliance.org':'The Open Book Alliance Blog', 'iawebarchiving.wordpress.com':'The Web Archiving at archive.org Blog', 'opds-spec.org':'The OPDS blog'}
 
 def aggregateBlogs(feedList, aggBlog):
@@ -74,8 +86,10 @@ def getContent(post):
     author = post.author
     link = post.link
     site = urlparse(link).netloc
+    # Removes digg/reddit/etc. links, and unnecessary images
     content = re.sub('<a href="http://feeds.wordpress.com.*?</a>', '', content)
     content = re.sub('<img .*?http://stats.wordpress.com.*?>', '', content)
+    # Adds in a link to the post on the original blog
     ref = '''<div><i><a href ="''' + link + '''">Originally posted on ''' + feeds[site] + ''' by ''' + author + '''.</a></i></div>'''
     content += ref
     return content
@@ -101,6 +115,6 @@ def updateDatabase(post, id):
     c.execute('insert into posts values (?,?)',(post.link,id))
     conn.commit()
 
-aggregateBlogs(blogs, "http://dmontalvo.wordpress.com/xmlrpc.php")
+aggregateBlogs(blogs, aggBlog)
 c.close()
 os.unlink(lock)
