@@ -63,12 +63,9 @@ def getNewPosts(parsedFeedList):
 
 def isPosted(post):
     """Takes a post and checks to see if it's in the "old post" database."""
-    print "url = %r" %  post.link
     c.execute('select * from posts where url = ?',(post.link,))
     fetch = c.fetchall()
-    print "Post found: %r" % fetch
     posted = [] != fetch
-    print "Posted: %r" % posted
     return posted
 
 def getContent(post):
